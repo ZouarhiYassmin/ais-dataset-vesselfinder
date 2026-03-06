@@ -8,6 +8,8 @@ on:
 jobs:
   run-script:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Télécharger le repo
@@ -26,10 +28,10 @@ jobs:
 
       - name: Commit et push des données
         env:
-          AIS_PUSH_TOKEN: ${{ secrets.AIS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add data/*.csv
           git commit -m "Update AIS dataset" || echo "No changes"
-          git push https://x-access-token:${AIS_PUSH_TOKEN}@github.com/ZouarhiYassmin/ais-dataset-vesselfinder.git
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/ZouarhiYassmin/ais-dataset-vesselfinder.git
