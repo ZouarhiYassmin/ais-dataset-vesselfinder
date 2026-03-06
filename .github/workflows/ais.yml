@@ -25,9 +25,11 @@ jobs:
         run: python collect_ais.py
 
       - name: Sauvegarder les données
+        env:
+          AIS_PUSH_TOKEN: ${{ secrets.AIS_PUSH_TOKEN}}  # <-- ton secret ici
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add data/*.csv
           git commit -m "Update AIS dataset" || echo "No changes"
-          git push
+          git push https://ZouarhiYassmin:${AIS_PUSH_TOKEN}@github.com/ZouarhiYassmin/ais-dataset-vesselfinder.git
