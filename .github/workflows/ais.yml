@@ -32,4 +32,4 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git add data/*.csv
           git commit -m "Update AIS dataset" || echo "No changes"
-          git push https://x-access-token:${AIS_TOKEN}@github.com/ZouarhiYassmin/ais-dataset-vesselfinder.git
+          git push https://x-access-token:${AIS_PUSH_TOKEN}@github.com/ZouarhiYassmin/ais-dataset-vesselfinder.git
