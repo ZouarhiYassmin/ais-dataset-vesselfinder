@@ -36,7 +36,12 @@ def extract_number(text):
 # ----- SCRAPER DONNÉES -----
 def get_vessel_data(url):
 
-    headers = {"User-Agent": "Mozilla/5.0"}
+    headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept": "text/html,application/xhtml+xml",
+    "Connection": "keep-alive"
+}
 
     try:
         response = requests.get(url, headers=headers, timeout=10)
