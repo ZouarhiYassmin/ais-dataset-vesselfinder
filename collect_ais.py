@@ -51,6 +51,9 @@ def get_vessel_data(url):
         return None
 
     soup = BeautifulSoup(response.text, "html.parser")
+    if "VesselFinder" not in response.text:
+        print("Page bloquée ou incorrecte")
+        return None
 
     data = {}
 
