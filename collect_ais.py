@@ -76,18 +76,48 @@ def get_vessel_data(url):
 
     data["timestamp"] = datetime.utcnow()
 
-    # Extraction position
-    position = data.get("Position", "")
+    # Extraction position depuis les clés du tableau (FR/EN)
+    position = (
+        data.get("Position") or
+        data.get("Coordinates") or
+        data.get("Coordonnées") or
+        ""
+    )
     if "/" in position:
         parts = position.split("/")
         data["latitude"] = extract_number(parts[0])
         data["longitude"] = extract_number(parts[1])
     else:
-        data["latitude"] = None
-        data["longitude"] = None
+        # Cherche les coordonnées directement dans le HTML brut
+        coord_match = re.search(
+            r'([-+]?\d{1,3}\.\d+)\s*/\s*([-+]?\d{1,3}\.\d+)',
+            response.text
+        )
+        if coord_match:
+            data["latitude"] = float(coord_match.group(1))
+            data["longitude"] = float(coord_match.group(2))
+        else:
+            # Cherche dans les meta tags ou JSON embarqué
+            lat_match = re.search(r'"latitude"\s*:\s*([-+]?\d+\.\d+)', response.text)
+            lon_match = re.search(r'"longitude"\s*:\s*([-+]?\d+\.\d+)', response.text)
+            data["latitude"] = float(lat_match.group(1)) if lat_match else None
+            data["longitude"] = float(lon_match.group(1)) if lon_match else None
 
-    data["speed"] = extract_number(data.get("Speed"))
-    data["course"] = extract_number(data.get("Course"))
+    # Extraction vitesse et cap (FR/EN)
+    speed_val = (
+        data.get("Speed") or
+        data.get("Vitesse") or
+        data.get("Direction / Vitesse") or
+        ""
+    )
+    course_val = (
+        data.get("Course") or
+        data.get("Cap") or
+        data.get("Direction") or
+        ""
+    )
+    data["speed"] = extract_number(speed_val)
+    data["course"] = extract_number(course_val)
 
     logging.info(f"Données récupérées pour {data['ship_name']}")
     return data
