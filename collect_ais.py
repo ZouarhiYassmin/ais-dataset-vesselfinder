@@ -9,13 +9,13 @@ import time
 # ----- LISTE DES BATEAUX -----
 vessels = {
     "CARITA": "https://www.vesselfinder.com/fr/vessels/details/9993042",
-    "SY TICONDEROGA": "https://www.vesselfinder.com/fr/vessels/details/367384280",
-    "FORTUNATE SUN": "https://www.vesselfinder.com/fr/vessels/details/1008243",
-    "GULDEN LEEUW": "https://www.vesselfinder.com/fr/vessels/details/5085897",
-    "RISING SUN": "https://www.vesselfinder.com/fr/vessels/details/8982307",
+    "SY_TICONDEROGA": "https://www.vesselfinder.com/fr/vessels/details/367384280",
+    "FORTUNATE_SUN": "https://www.vesselfinder.com/fr/vessels/details/1008243",
+    "GULDEN_LEEUW": "https://www.vesselfinder.com/fr/vessels/details/5085897",
+    "RISING_SUN": "https://www.vesselfinder.com/fr/vessels/details/8982307",
     "ARROW": "https://www.vesselfinder.com/fr/vessels/details/9970337",
     "PANTHALASSA": "https://www.vesselfinder.com/fr/vessels/details/9578103",
-    "FRYDERYK CHOPIN": "https://www.vesselfinder.com/fr/vessels/details/9030747"
+    "FRYDERYK_CHOPIN": "https://www.vesselfinder.com/fr/vessels/details/9030747"
 }
 
 data_folder = "data"
