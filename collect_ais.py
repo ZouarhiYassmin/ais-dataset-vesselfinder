@@ -78,7 +78,7 @@ def get_vessel_data(url):
     data["timestamp"] = datetime.utcnow()
 
     # Extraction position depuis l'attribut data-json (djson)
-    djson_tag = soup.find(class_="djson")
+    djson_tag = soup.find(id="djson")
     if djson_tag and djson_tag.get("data-json"):
         try:
             vessel_json = json.loads(djson_tag["data-json"])
