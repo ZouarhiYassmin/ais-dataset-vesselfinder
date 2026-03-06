@@ -6,6 +6,7 @@ import os
 import re
 import time
 import logging
+import json
 
 # ----- CONFIGURATION LOGGING -----
 logging.basicConfig(
@@ -76,48 +77,25 @@ def get_vessel_data(url):
 
     data["timestamp"] = datetime.utcnow()
 
-    # Extraction position depuis les clés du tableau (FR/EN)
-    position = (
-        data.get("Position") or
-        data.get("Coordinates") or
-        data.get("Coordonnées") or
-        ""
-    )
-    if "/" in position:
-        parts = position.split("/")
-        data["latitude"] = extract_number(parts[0])
-        data["longitude"] = extract_number(parts[1])
+    # Extraction position depuis l'attribut data-json (djson)
+    djson_tag = soup.find(class_="djson")
+    if djson_tag and djson_tag.get("data-json"):
+        try:
+            vessel_json = json.loads(djson_tag["data-json"])
+            data["latitude"] = vessel_json.get("ship_lat")
+            data["longitude"] = vessel_json.get("ship_lon")
+            data["speed"] = vessel_json.get("ship_sog")
+            data["course"] = vessel_json.get("ship_cog")
+        except (json.JSONDecodeError, KeyError):
+            data["latitude"] = None
+            data["longitude"] = None
+            data["speed"] = None
+            data["course"] = None
     else:
-        # Cherche les coordonnées directement dans le HTML brut
-        coord_match = re.search(
-            r'([-+]?\d{1,3}\.\d+)\s*/\s*([-+]?\d{1,3}\.\d+)',
-            response.text
-        )
-        if coord_match:
-            data["latitude"] = float(coord_match.group(1))
-            data["longitude"] = float(coord_match.group(2))
-        else:
-            # Cherche dans les meta tags ou JSON embarqué
-            lat_match = re.search(r'"latitude"\s*:\s*([-+]?\d+\.\d+)', response.text)
-            lon_match = re.search(r'"longitude"\s*:\s*([-+]?\d+\.\d+)', response.text)
-            data["latitude"] = float(lat_match.group(1)) if lat_match else None
-            data["longitude"] = float(lon_match.group(1)) if lon_match else None
-
-    # Extraction vitesse et cap (FR/EN)
-    speed_val = (
-        data.get("Speed") or
-        data.get("Vitesse") or
-        data.get("Direction / Vitesse") or
-        ""
-    )
-    course_val = (
-        data.get("Course") or
-        data.get("Cap") or
-        data.get("Direction") or
-        ""
-    )
-    data["speed"] = extract_number(speed_val)
-    data["course"] = extract_number(course_val)
+        data["latitude"] = None
+        data["longitude"] = None
+        data["speed"] = None
+        data["course"] = None
 
     logging.info(f"Données récupérées pour {data['ship_name']}")
     return data
